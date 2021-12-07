@@ -35,7 +35,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        employees = await Http.GetFromJsonAsync<Employee[]>("sample-data/weather.json");
+        employees = await Http.GetFromJsonAsync<Employee[]>("api/Employees");
     }
 
     public class Employee

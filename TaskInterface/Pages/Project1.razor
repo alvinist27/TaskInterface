@@ -33,7 +33,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        projects = await Http.GetFromJsonAsync<Project[]>("sample-data/weather.json");
+        projects = await Http.GetFromJsonAsync<Project[]>("api/Projects");
     }
 
     public class Project
