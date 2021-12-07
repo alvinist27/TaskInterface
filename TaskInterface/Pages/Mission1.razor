@@ -1,0 +1,63 @@
+﻿@page "/Missions"
+@inject HttpClient Http
+
+<h1>Mission</h1>
+
+@if (missions == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Статус</th>
+                <th>Тип</th>
+                <th>Описание</th>
+                <th>Дата начала</th>
+                <th>Дата конца</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var mission in missions)
+            {
+            <tr>
+                <td>@mission.MissionID</td>
+                <td>@mission.MName</td>
+                <td>@mission.MStatus</td>
+                <td>@mission.MType</td>
+                <td>@mission.MDescription</td>
+                <td>@mission.DateStart</td>
+                <td>@mission.DateEnd</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Mission[] missions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        missions = await Http.GetFromJsonAsync<Mission[]>("sample-data/weather.json");
+    }
+
+    public class Mission
+    {
+        public Guid MissionID { get; set; }
+        public string MName { get; set; }
+        public string MStatus { get; set; }
+        public string MType { get; set; }
+        public string MDescription { get; set; }
+        public DateTime DateStart { get; set; }
+        public DateTime DateEnd { get; set; }
+        public Guid ProjectID { get; set; }
+        public Project Project { get; set; }
+        public Guid EmployeeID { get; set; }
+        public Employee Employee { get; set; }
+    }
+}

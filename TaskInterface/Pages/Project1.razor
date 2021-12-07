@@ -1,0 +1,45 @@
+﻿@page "/Projects"
+@inject HttpClient Http
+
+<h1>Project</h1>
+
+@if (projects == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var project in projects)
+            {
+            <tr>
+                <td>@project.ProjectID</td>
+                <td>@project.PName</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Project[] projects;
+
+    protected override async Task OnInitializedAsync()
+    {
+        projects = await Http.GetFromJsonAsync<Project[]>("sample-data/weather.json");
+    }
+
+    public class Project
+    {
+        public Guid ProjectID { get; set; }
+        public string PName { get; set; }
+        public List<Mission> Missions { get; set; }
+    }
+}

@@ -1,0 +1,48 @@
+﻿@page "/Employees"
+@inject HttpClient Http
+
+<h1>Employee</h1>
+
+@if (employees == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Должность</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in employees)
+            {
+            <tr>
+                <td>@employee.EmployeeID</td>
+                <td>@employee.EName</td>
+                <td>@employee.EWork</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Employee[] employees;
+
+    protected override async Task OnInitializedAsync()
+    {
+        employees = await Http.GetFromJsonAsync<Employee[]>("sample-data/weather.json");
+    }
+
+    public class Employee
+    {
+        public Guid EmployeeID { get; set; }
+        public string EName { get; set; }
+        public string EWork { get; set; }
+        public List<Mission> Missions { get; set; }
+    }
+}
