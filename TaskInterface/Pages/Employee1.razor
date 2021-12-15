@@ -1,4 +1,6 @@
-﻿@page "/Employees"
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@page "/Employees"
 @inject HttpClient Http
 
 <h1>Employee</h1>
@@ -15,16 +17,18 @@ else
                 <th>ID</th>
                 <th>Имя</th>
                 <th>Должность</th>
+                <th>Задачи</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var employee in employees)
             {
-            <tr>
-                <td>@employee.EmployeeID</td>
-                <td>@employee.EName</td>
-                <td>@employee.EWork</td>
-            </tr>
+                <tr>
+                    <td>@employee.EmployeeID</td>
+                    <td>@employee.EName</td>
+                    <td>@employee.EWork</td>
+                    <td>@employee.Missions</td>
+                </tr>
             }
         </tbody>
     </table>
@@ -35,7 +39,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        employees = await Http.GetFromJsonAsync<Employee[]>("api/Employees");
+        employees = await Http.GetFromJsonAsync<Employee[]>("https://localhost:5002/api/Employees");
+        //employees = await Http.GetFromJsonAsync<Employee[]>("sample-data/weather.json");
     }
 
     public class Employee
