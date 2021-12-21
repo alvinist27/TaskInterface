@@ -43,8 +43,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        //missions = await Http.GetFromJsonAsync<Mission[]>("api/Missions");
-        missions = await Http.GetFromJsonAsync<Mission[]>("sample-data/weather.json");
+        missions = await Http.GetFromJsonAsync<Mission[]>("https://localhost:5002/api/Missions");
+        //missions = await Http.GetFromJsonAsync<Mission[]>("sample-data/weather.json");
     }
 
     public class Mission
