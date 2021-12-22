@@ -1,10 +1,12 @@
-﻿@using System.Net.Http
-@using System.Net.Http.Json
+﻿@using System.Net.Http.Json
 @page "/Employees"
 @inject HttpClient Http
+@using System.Net.Http
+@using System.Threading.Tasks
 
 <h1>Employee</h1>
-
+<p><br /></p>
+<h3>Список записей Employee</h3>
 @if (employees == null)
 {
     <p><em>Loading...</em></p>
@@ -34,6 +36,8 @@ else
     </table>
 }
 
+
+
 @code {
     private Employee[] employees;
 
@@ -51,3 +55,60 @@ else
         public List<Mission> Missions { get; set; }
     }
 }
+
+
+<p><br /></p>
+<h3>Добавление записей Employee</h3>
+<input @bind="newItemName1" placeholder="ФИО Работника" />
+<input @bind="newItemName2" placeholder="Должность" />
+
+<button @onclick="AddItem">Add</button>
+
+@code {
+    private string newItemName1;
+    private string newItemName2;
+
+    private async Task AddItem()
+    {
+        var addItem = new Employee { EName = newItemName1, EWork = newItemName2 };
+        await Http.PostAsJsonAsync("https://localhost:5002/api/Employees", addItem);
+    }
+}
+
+
+<p><br /></p>
+<h3>Редактирование записей Employee</h3>
+<input @bind="editItem.EmployeeID" placeholder="iddd" />
+<input @bind="editItem.EName" placeholder="ФИО Работника" />
+<input @bind="editItem.EWork" placeholder="Должность" />
+<button @onclick="SaveItem">Save</button>
+
+@code {
+    private Guid id;
+    private Employee editItem = new Employee();
+
+    private void EditItem(Guid id)
+    {
+        editItem = employees.Single(i => i.EmployeeID == id);
+    }
+
+    private async Task SaveItem() =>
+        await Http.PutAsJsonAsync($"https://localhost:5002/api/Employees/{editItem.EmployeeID}", editItem);
+}
+
+
+
+
+<p><br /></p>
+<h3>Удаление записей Employees</h3>
+<input @bind="id1" />
+<button @onclick="DeleteItem">Delete</button>
+
+@code {
+    private Guid id1;
+
+    private async Task DeleteItem() =>
+        await Http.DeleteAsync($"https://localhost:5002/api/Employees/{id1}");
+}
+<p><br /></p>
+<p><br /></p>
