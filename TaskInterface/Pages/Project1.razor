@@ -1,8 +1,12 @@
-﻿@page "/Projects"
+﻿@using System.Net.Http.Json
+@page "/Projects"
 @inject HttpClient Http
+@using System.Net.Http
+@using System.Threading.Tasks
 
 <h1>Project</h1>
-
+<p><br /></p>
+<h3>Список записей Project</h3>
 @if (projects == null)
 {
     <p><em>Loading...</em></p>
@@ -19,10 +23,10 @@ else
         <tbody>
             @foreach (var project in projects)
             {
-            <tr>
-                <td>@project.ProjectID</td>
-                <td>@project.PName</td>
-            </tr>
+                <tr>
+                    <td>@project.ProjectID</td>
+                    <td>@project.PName</td>
+                </tr>
             }
         </tbody>
     </table>
@@ -44,3 +48,54 @@ else
         public List<Mission> Missions { get; set; }
     }
 }
+
+
+<p><br /></p>
+<h3>Добавление записей Project</h3>
+<input @bind="newItemName1" placeholder="Имя проекта" />
+<button @onclick="AddItem">Add</button>
+
+@code {
+    private string newItemName1;
+
+    private async Task AddItem()
+    {
+        var addItem = new Project { PName = newItemName1 };
+        await Http.PostAsJsonAsync("https://localhost:5002/api/Projects", addItem);
+    }
+}
+
+
+<p><br /></p>
+<h3>Редактирование записей Project</h3>
+<input @bind="editItem.ProjectID" placeholder="id" />
+<input @bind="editItem.PName" placeholder="Имя проекта" />
+<button @onclick="SaveItem">Save</button>
+
+@code {
+    private Guid id;
+    private Project editItem = new Project();
+
+    private void EditItem(Guid id)
+    {
+        editItem = projects.Single(i => i.ProjectID == id);
+    }
+
+    private async Task SaveItem() =>
+        await Http.PutAsJsonAsync($"https://localhost:5002/api/Projects/{editItem.ProjectID}", editItem);
+}
+
+
+<p><br /></p>
+<h3>Удаление записей Project</h3>
+<input @bind="id1" />
+<button @onclick="DeleteItem">Delete</button>
+
+@code {
+    private Guid id1;
+
+    private async Task DeleteItem() =>
+        await Http.DeleteAsync($"https://localhost:5002/api/Projects/{id1}");
+}
+<p><br /></p>
+<p><br /></p>
