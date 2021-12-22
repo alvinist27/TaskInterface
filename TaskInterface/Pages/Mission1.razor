@@ -1,8 +1,12 @@
-﻿@page "/Missions"
+﻿@using System.Net.Http.Json
+@page "/Missions"
 @inject HttpClient Http
+@using System.Net.Http
+@using System.Threading.Tasks
 
 <h1>Mission</h1>
-
+<p><br /></p>
+<h3>Список записей Mission</h3>
 @if (missions == null)
 {
     <p><em>Loading...</em></p>
@@ -19,20 +23,24 @@ else
                 <th>Описание</th>
                 <th>Дата начала</th>
                 <th>Дата конца</th>
+                <th>id Проекта</th>
+                <th>id Работника</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var mission in missions)
             {
-            <tr>
-                <td>@mission.MissionID</td>
-                <td>@mission.MName</td>
-                <td>@mission.MStatus</td>
-                <td>@mission.MType</td>
-                <td>@mission.MDescription</td>
-                <td>@mission.DateStart</td>
-                <td>@mission.DateEnd</td>
-            </tr>
+                <tr>
+                    <td>@mission.MissionID</td>
+                    <td>@mission.MName</td>
+                    <td>@mission.MStatus</td>
+                    <td>@mission.MType</td>
+                    <td>@mission.MDescription</td>
+                    <td>@mission.DateStart</td>
+                    <td>@mission.DateEnd</td>
+                    <td>@mission.ProjectID</td>
+                    <td>@mission.EmployeeID</td>
+                </tr>
             }
         </tbody>
     </table>
@@ -62,3 +70,86 @@ else
         public Employee Employee { get; set; }
     }
 }
+
+
+<p><br /></p>
+<h3>Добавление записей Mission</h3>
+<input @bind="newItemName1" placeholder="Имя задачи" />
+<input @bind="newItemName2" placeholder="Статус задачи" />
+<input @bind="newItemName3" placeholder="Тип задачи" />
+<input @bind="newItemName4" placeholder="Описание задачи" />
+<input @bind="newItemName5" placeholder="Дата начала" />
+<input @bind="newItemName6" placeholder="Дата конца" />
+<input @bind="newItemName7" placeholder="id Проекта" />
+<input @bind="newItemName8" placeholder="id Работника" />
+<button @onclick="AddItem">Add</button>
+
+@code {
+    private string newItemName1;
+    private string newItemName2;
+    private string newItemName3;
+    private string newItemName4;
+    private DateTime newItemName5;
+    private DateTime newItemName6;
+    private string newItemName7;
+    private string newItemName8;
+
+
+    private async Task AddItem()
+    {
+        var addItem = new Mission
+        {
+            MName = newItemName1,
+            MStatus = newItemName2,
+            MType = newItemName3,
+            MDescription = newItemName4,
+            DateStart = newItemName5,
+            DateEnd = newItemName6,
+            ProjectID = new Guid(newItemName7),
+            EmployeeID = new Guid(newItemName8)
+        };
+        await Http.PostAsJsonAsync("https://localhost:5002/api/Missions", addItem);
+    }
+}
+
+
+<p><br /></p>
+<h3>Редактирование записей Mission</h3>
+<input @bind="editItem.MissionID" placeholder="id" />
+<input @bind="editItem.MName" placeholder="Имя задачи" />
+<input @bind="editItem.MStatus" placeholder="Статус задачи" />
+<input @bind="editItem.MType" placeholder="Тип задачи" />
+<input @bind="editItem.MDescription" placeholder="Описание задачи" />
+<input @bind="editItem.DateStart" placeholder="Дата начала" />
+<input @bind="editItem.DateEnd" placeholder="Дата конца" />
+<input @bind="editItem.ProjectID" placeholder="id Проекта" />
+<input @bind="editItem.EmployeeID" placeholder="id Работника" />
+<button @onclick="SaveItem">Save</button>
+
+@code {
+    private Guid id;
+    private Mission editItem = new Mission();
+
+    private void EditItem(Guid id)
+    {
+        editItem = missions.Single(i => i.MissionID == id);
+    }
+
+    private async Task SaveItem() =>
+        await Http.PutAsJsonAsync($"https://localhost:5002/api/Missions/{editItem.MissionID}", editItem);
+}
+
+
+<p><br /></p>
+<h3>Удаление записей Mission</h3>
+<input @bind="id1" />
+<button @onclick="DeleteItem">Delete</button>
+
+@code {
+    private Guid id1;
+
+    private async Task DeleteItem() =>
+        await Http.DeleteAsync($"https://localhost:5002/api/Missions/{id1}");
+}
+<p><br /></p>
+<p><br /></p>
