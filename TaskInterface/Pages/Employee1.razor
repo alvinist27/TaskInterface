@@ -19,7 +19,6 @@ else
                 <th>ID</th>
                 <th>Имя</th>
                 <th>Должность</th>
-                <th>Задачи</th>
             </tr>
         </thead>
         <tbody>
@@ -29,14 +28,13 @@ else
                     <td>@employee.EmployeeID</td>
                     <td>@employee.EName</td>
                     <td>@employee.EWork</td>
-                    <td>@employee.Missions</td>
                 </tr>
             }
         </tbody>
     </table>
 }
 
-
+    
 
 @code {
     private Employee[] employees;
